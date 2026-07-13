@@ -1,11 +1,14 @@
 import os
 import telebot
 import time
+from dotenv import load_dotenv
+
+load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
 
 if not TOKEN:
-    raise ValueError("Не знайдено TOKEN у змінних середовища!")
+    raise ValueError("Не знайдено TOKEN у .env або змінних середовища!")
 
 bot = telebot.TeleBot(TOKEN)
 

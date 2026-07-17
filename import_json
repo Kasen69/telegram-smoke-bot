@@ -1,0 +1,14 @@
+import json
+from database import create_table, import_from_json
+
+# Створюємо таблицю, якщо її ще немає
+create_table()
+
+# Читаємо backup.json
+with open("backup.json", "r", encoding="utf-8") as file:
+    data = json.load(file)
+
+# Імпортуємо дані в SQLite
+import_from_json(data)
+
+print("✅ Дані успішно імпортовано в smokes.db")

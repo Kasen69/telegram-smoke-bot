@@ -1,6 +1,14 @@
 import os
 import telebot
 import time
+from database import (
+    create_table,
+    add_user,
+    get_user,
+    update_username,
+    update_smoke,
+    get_top,
+)
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,10 +20,7 @@ if not TOKEN:
 
 bot = telebot.TeleBot(TOKEN)
 
-# Зберігаємо статистику по користувачах
-smokes = {}           # {user_id: count}
-last_smoke_time = {}  # {user_id: timestamp}
-usernames = {}        # {user_id: username}
+create_table()
 
 COOLDOWN = 3600  # 1 година
 
@@ -25,7 +30,12 @@ def start(message):
     user_id = message.from_user.id
     username = message.from_user.first_name or "Без імені"
 
-    usernames[user_id] = username
+    user = get_user(user_id)
+
+    if user is None:
+        add_user(user_id, username)
+
+    update_username(user_id, username)
 
     bot.send_message(
         message.chat.id,
@@ -42,25 +52,32 @@ def smoke(message):
     user_id = message.from_user.id
     username = message.from_user.first_name or "Без імені"
 
-    usernames[user_id] = username
-
     current_time = time.time()
 
-    if user_id not in smokes:
-        smokes[user_id] = 0
-        last_smoke_time[user_id] = 0
+    user = get_user(user_id)
 
-    if current_time - last_smoke_time[user_id] >= COOLDOWN:
-        smokes[user_id] += 1
-        last_smoke_time[user_id] = current_time
+    if user is None:
+        add_user(user_id, username)
+
+    update_username(user_id, username)
+    user = get_user(user_id)
+
+    if current_time - user["last_smoke"] >= COOLDOWN:
+        new_count = user["smokes"] + 1
+
+        update_smoke(
+            user_id,
+            new_count,
+            current_time
+        )
 
         bot.reply_to(
             message,
             f"✅ {username}, ти покурив!\n"
-            f"🚬 Всього перекурів: {smokes[user_id]}"
+            f"🚬 Всього перекурів: {new_count}"
         )
     else:
-        remaining = int((COOLDOWN - (current_time - last_smoke_time[user_id])) / 60)
+        remaining = int((COOLDOWN - (current_time - user["last_smoke"])) / 60)
 
         bot.reply_to(
             message,
@@ -72,9 +89,14 @@ def smoke(message):
 @bot.message_handler(commands=['info'])
 def info(message):
     user_id = message.from_user.id
-    username = usernames.get(user_id, message.from_user.first_name or "Без імені")
+    user = get_user(user_id)
 
-    count = smokes.get(user_id, 0)
+    if user is None:
+        bot.reply_to(message, "У тебе ще немає статистики.")
+        return
+
+    username = user["username"]
+    count = user["smokes"]
 
     bot.reply_to(
         message,
@@ -87,18 +109,19 @@ def info(message):
 
 @bot.message_handler(commands=['top'])
 def top(message):
-    if not smokes:
+    ranking = get_top()
+
+    if len(ranking) == 0:
         bot.reply_to(message, "🚭 Поки що ніхто не курив.")
         return
-
-    ranking = sorted(smokes.items(), key=lambda x: x[1], reverse=True)
 
     medals = ["🥇", "🥈", "🥉"]
 
     text = "🏆 Топ курців\n\n"
 
-    for i, (uid, count) in enumerate(ranking[:10]):
-        username = usernames.get(uid, "Без імені")
+    for i, user in enumerate(ranking):
+        username = user["username"]
+        count = user["smokes"]
 
         if i < 3:
             place = medals[i]

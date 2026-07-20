@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Віртуальне середовище
+venv/
+.venv/
+
+# Секрети
+.env
+
+# Локальна база даних
+smokes.db
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/

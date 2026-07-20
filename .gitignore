@@ -9,9 +9,6 @@ venv/
 # Секрети
 .env
 
-# Локальна база даних
-smokes.db
-
 # VS Code
 .vscode/
 

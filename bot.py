@@ -137,7 +137,10 @@ def top(message):
 def other(message):
     text = message.text.lower()
 
-    if text == "іді нахуй":
+    if "іді нахуй" in text and "@pitpivo69bot" in text:
+        bot.reply_to(message, "сам іді")
+
+    elif text == "іді нахуй":
         bot.reply_to(message, "сам іді")
 
     elif text == "id":

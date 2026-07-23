@@ -159,3 +159,22 @@ def get_chats_count():
 
     conn.close()
     return count
+
+def get_user_rank(user_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT COUNT(*) + 1
+        FROM users
+        WHERE smokes > (
+            SELECT smokes
+            FROM users
+            WHERE user_id = ?
+        )
+    """, (user_id,))
+
+    rank = cursor.fetchone()[0]
+
+    conn.close()
+    return rank

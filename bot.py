@@ -102,16 +102,19 @@ def info(message):
         bot.reply_to(message, "У тебе ще немає статистики.")
         return
 
-    username = user["username"]
+    username = usernam["usere"]
     count = user["smokes"]
 
+    rank = get_user_rank(user_id)
+
     bot.reply_to(
-        message,
-        f"📊 Статистика\n\n"
-        f"👤 {username}\n"
-        f"🚬 Перекурів: {count}\n\n"
-        f"🔗 https://t.me/perekurbot69"
-    )
+    message,
+    f"📊 Статистика\n\n"
+    f"👤 {username}\n"
+    f"🚬 Перекурів: {count}\n"
+    f"🏆 Місце в топі: #{rank}\n\n"
+    f"🔗 https://t.me/perekurbot69"
+)
 
 
 @bot.message_handler(commands=['top'])

@@ -24,11 +24,14 @@ create_table()
 
 COOLDOWN = 3600  # 1 година
 
+ADMIN_ID = 879144294
 
 @bot.message_handler(commands=['start'])
 def start(message):
     user_id = message.from_user.id
     username = message.from_user.first_name or "Без імені"
+
+    add_chat(message.chat.id)
 
     user = get_user(user_id)
 
@@ -51,6 +54,8 @@ def start(message):
 def smoke(message):
     user_id = message.from_user.id
     username = message.from_user.first_name or "Без імені"
+
+    add_chat(message.chat.id)
 
     current_time = time.time()
 
@@ -89,6 +94,8 @@ def smoke(message):
 @bot.message_handler(commands=['info'])
 def info(message):
     user_id = message.from_user.id
+
+    add_chat(message.chat.id)
     user = get_user(user_id)
 
     if user is None:
@@ -109,6 +116,7 @@ def info(message):
 
 @bot.message_handler(commands=['top'])
 def top(message):
+    add_chat(message.chat.id)
     ranking = get_top()
 
     if len(ranking) == 0:
@@ -132,6 +140,20 @@ def top(message):
 
     bot.send_message(message.chat.id, text)
 
+@bot.message_handler(commands=['admin'])
+def admin(message):
+    if message.from_user.id != ADMIN_ID:
+        return
+
+    users = get_users_count()
+    chats = get_chats_count()
+
+    bot.reply_to(
+        message,
+        f"📊 Статистика бота\n\n"
+        f"👥 Користувачів: {users}\n"
+        f"💬 Чатів: {chats}"
+    )
 
 @bot.message_handler(func=lambda m: True)
 def other(message):

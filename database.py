@@ -17,6 +17,12 @@ def create_table():
     )
     """)
 
+    cursor.execute("""
+CREATE TABLE IF NOT EXISTS chats (
+    chat_id INTEGER PRIMARY KEY
+)
+""")
+
     conn.commit()
     conn.close()
 
@@ -120,3 +126,36 @@ def import_from_json(data):
 
     conn.commit()
     conn.close()
+
+def get_users_count():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM users")
+    count = cursor.fetchone()[0]
+
+    conn.close()
+    return count
+
+def add_chat(chat_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT OR IGNORE INTO chats(chat_id)
+        VALUES (?)
+    """, (chat_id,))
+
+    conn.commit()
+    conn.close()
+
+
+def get_chats_count():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM chats")
+    count = cursor.fetchone()[0]
+
+    conn.close()
+    return count

@@ -18,10 +18,19 @@ def create_table():
     """)
 
     cursor.execute("""
-CREATE TABLE IF NOT EXISTS chats (
-    chat_id INTEGER PRIMARY KEY
-)
-""")
+    CREATE TABLE IF NOT EXISTS chats (
+        chat_id INTEGER PRIMARY KEY,
+        chat_type TEXT
+    )
+    """)
+
+    try:
+        cursor.execute("""
+          ALTER TABLE chats
+           ADD COLUMN chat_type TEXT DEFAULT 'private'
+        """)
+    except sqlite3.OperationalError:
+      pass
 
     conn.commit()
     conn.close()
@@ -137,28 +146,17 @@ def get_users_count():
     conn.close()
     return count
 
-def add_chat(chat_id):
+def add_chat(chat_id, chat_type):
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT OR IGNORE INTO chats(chat_id)
-        VALUES (?)
-    """, (chat_id,))
+        INSERT OR IGNORE INTO chats(chat_id, chat_type)
+        VALUES (?, ?)
+    """, (chat_id, chat_type))
 
     conn.commit()
     conn.close()
-
-
-def get_chats_count():
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT COUNT(*) FROM chats")
-    count = cursor.fetchone()[0]
-
-    conn.close()
-    return count
 
 def get_user_rank(user_id):
     conn = get_connection()
@@ -178,3 +176,34 @@ def get_user_rank(user_id):
 
     conn.close()
     return rank
+
+def get_private_chats_count():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM chats
+        WHERE chat_type = 'private'
+    """)
+
+    count = cursor.fetchone()[0]
+
+    conn.close()
+    return count
+
+
+def get_group_chats_count():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM chats
+        WHERE chat_type IN ('group', 'supergroup')
+    """)
+
+    count = cursor.fetchone()[0]
+
+    conn.close()
+    return count

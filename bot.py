@@ -8,6 +8,11 @@ from database import (
     update_username,
     update_smoke,
     get_top,
+    add_chat,
+    get_user_rank,
+    get_users_count,
+    get_private_chats_count,
+    get_group_chats_count,
 )
 from dotenv import load_dotenv
 
@@ -31,7 +36,10 @@ def start(message):
     user_id = message.from_user.id
     username = message.from_user.first_name or "Без імені"
 
-    add_chat(message.chat.id)
+    add_chat(
+    message.chat.id,
+    message.chat.type
+    )
 
     user = get_user(user_id)
 
@@ -49,13 +57,15 @@ def start(message):
         "/top — топ курців"
     )
 
-
 @bot.message_handler(commands=['smoke'])
 def smoke(message):
     user_id = message.from_user.id
     username = message.from_user.first_name or "Без імені"
 
-    add_chat(message.chat.id)
+    add_chat(
+    message.chat.id,
+    message.chat.type
+    )
 
     current_time = time.time()
 
@@ -81,13 +91,29 @@ def smoke(message):
             f"✅ {username}, ти покурив!\n"
             f"🚬 Всього перекурів: {new_count}"
         )
+
     else:
-        remaining = int((COOLDOWN - (current_time - user["last_smoke"])) / 60)
+        remaining_seconds = int(
+            COOLDOWN - (current_time - user["last_smoke"])
+        )
+
+        if remaining_seconds >= 300:  # 5 хвилин
+            minutes = remaining_seconds // 60
+            wait_time = f"{minutes} хв"
+
+        else:
+            minutes = remaining_seconds // 60
+            seconds = remaining_seconds % 60
+
+            if minutes > 0:
+                wait_time = f"{minutes} хв {seconds} сек"
+            else:
+                wait_time = f"{seconds} сек"
 
         bot.reply_to(
             message,
             f"❌ {username}, ще рано.\n"
-            f"⏳ Зачекай приблизно {remaining} хв."
+            f"⏳ Зачекай приблизно {wait_time}."
         )
 
 
@@ -95,14 +121,17 @@ def smoke(message):
 def info(message):
     user_id = message.from_user.id
 
-    add_chat(message.chat.id)
+    add_chat(
+    message.chat.id,
+    message.chat.type
+    )
     user = get_user(user_id)
 
     if user is None:
         bot.reply_to(message, "У тебе ще немає статистики.")
         return
 
-    username = usernam["usere"]
+    username = user["username"]
     count = user["smokes"]
 
     rank = get_user_rank(user_id)
@@ -119,7 +148,10 @@ def info(message):
 
 @bot.message_handler(commands=['top'])
 def top(message):
-    add_chat(message.chat.id)
+    add_chat(
+    message.chat.id,
+    message.chat.type
+    )
     ranking = get_top()
 
     if len(ranking) == 0:
@@ -149,13 +181,15 @@ def admin(message):
         return
 
     users = get_users_count()
-    chats = get_chats_count()
+    private_chats = get_private_chats_count()
+    groups = get_group_chats_count()
 
     bot.reply_to(
         message,
         f"📊 Статистика бота\n\n"
         f"👥 Користувачів: {users}\n"
-        f"💬 Чатів: {chats}"
+        f"👤 Особистих чатів: {private_chats}\n"
+        f"👥 Груп: {groups}"
     )
 
 @bot.message_handler(func=lambda m: True)

@@ -132,7 +132,7 @@ def smoke(message):
         bot.reply_to(
             message,
             f"✅ {username}, ти покурив!\n"
-            f"🚬 Всього перекурів: {new_count}"
+            f"🚬 Всього перекурів : {new_count}"
         )
 
     else:

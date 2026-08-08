@@ -21,7 +21,7 @@ from database import (
 from dotenv import load_dotenv
 
 load_dotenv()
-# Test persistent database deployment
+# Persistent volume test
 
 TOKEN = os.getenv("TOKEN")
 

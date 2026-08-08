@@ -32,6 +32,21 @@ def create_table():
     except sqlite3.OperationalError:
       pass
 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS promo_codes (
+        code TEXT PRIMARY KEY,
+        type TEXT NOT NULL
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS used_promos (
+        user_id INTEGER,
+        code TEXT,
+        PRIMARY KEY (user_id, code)
+    )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -207,3 +222,60 @@ def get_group_chats_count():
 
     conn.close()
     return count
+
+def add_promo(code, promo_type):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT OR REPLACE INTO promo_codes(code, type)
+        VALUES (?, ?)
+    """, (code, promo_type))
+
+    conn.commit()
+    conn.close()
+
+
+def get_promo(code):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM promo_codes
+        WHERE code = ?
+    """, (code,))
+
+    promo = cursor.fetchone()
+
+    conn.close()
+    return promo
+
+
+def use_promo(user_id, code):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT OR IGNORE INTO used_promos(user_id, code)
+        VALUES (?, ?)
+    """, (user_id, code))
+
+    conn.commit()
+    conn.close()
+
+
+def is_promo_used(user_id, code):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT 1
+        FROM used_promos
+        WHERE user_id = ? AND code = ?
+    """, (user_id, code))
+
+    used = cursor.fetchone() is not None
+
+    conn.close()
+    return used

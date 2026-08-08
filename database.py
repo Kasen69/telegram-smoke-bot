@@ -1,54 +1,12 @@
 import sqlite3
+import os
 
-DB_NAME = "smokes.db"
 
-def create_table():
-    conn = get_connection()
-    cursor = conn.cursor()
-    
-    cursor.execute("PRAGMA journal_mode=WAL")
+if os.path.exists("/workspace/data"):
+    DB_NAME = "/workspace/data/smokes.db"
+else:
+    DB_NAME = "smokes.db"
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS users (
-        user_id INTEGER PRIMARY KEY,
-        username TEXT NOT NULL,
-        smokes INTEGER DEFAULT 0,
-        last_smoke REAL DEFAULT 0
-    )
-    """)
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS chats (
-        chat_id INTEGER PRIMARY KEY,
-        chat_type TEXT
-    )
-    """)
-
-    try:
-        cursor.execute("""
-          ALTER TABLE chats
-           ADD COLUMN chat_type TEXT DEFAULT 'private'
-        """)
-    except sqlite3.OperationalError:
-      pass
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS promo_codes (
-        code TEXT PRIMARY KEY,
-        type TEXT NOT NULL
-    )
-    """)
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS used_promos (
-        user_id INTEGER,
-        code TEXT,
-        PRIMARY KEY (user_id, code)
-    )
-    """)
-
-    conn.commit()
-    conn.close()
 
 def get_connection():
     conn = sqlite3.connect(
@@ -58,6 +16,47 @@ def get_connection():
     )
     conn.row_factory = sqlite3.Row
     return conn
+
+
+def create_table():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("PRAGMA journal_mode=WAL")
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            user_id INTEGER PRIMARY KEY,
+            username TEXT NOT NULL,
+            smokes INTEGER DEFAULT 0,
+            last_smoke REAL DEFAULT 0
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS chats (
+            chat_id INTEGER PRIMARY KEY,
+            chat_type TEXT
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS promo_codes (
+            code TEXT PRIMARY KEY,
+            type TEXT NOT NULL
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS used_promos (
+            user_id INTEGER,
+            code TEXT,
+            PRIMARY KEY (user_id, code)
+        )
+    """)
+
+    conn.commit()
+    conn.close()
 
 def add_user(user_id, username):
     conn = get_connection()

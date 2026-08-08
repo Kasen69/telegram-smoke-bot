@@ -97,7 +97,7 @@ def start(message):
         "Команди:\n"
         "/smoke — покурити\n"
         "/info — твоя статистика\n"
-        "/top — топ курців"
+        "/top — топ курців\n"
     )
 
 @bot.message_handler(commands=['smoke'])

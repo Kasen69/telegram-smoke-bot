@@ -303,3 +303,18 @@ def get_inventory(user_id):
 
     conn.close()
     return items
+
+
+def add_item(user_id, item_name, amount=1):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO inventory (user_id, item_name, amount)
+        VALUES (?, ?, ?)
+        ON CONFLICT(user_id, item_name)
+        DO UPDATE SET amount = amount + excluded.amount
+    """, (user_id, item_name, amount))
+
+    conn.commit()
+    conn.close()

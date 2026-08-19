@@ -17,6 +17,7 @@ from database import (
     get_promo,
     is_promo_used,
     use_promo,
+    get_inventory,
 )
 from dotenv import load_dotenv
 
@@ -235,6 +236,38 @@ def admin(message):
         f"👤 Особистих чатів: {private_chats}\n"
         f"👥 Груп: {groups}"
     )
+
+
+@bot.message_handler(commands=['inventory'])
+def inventory(message):
+    user_id = message.from_user.id
+
+    add_chat(
+        message.chat.id,
+        message.chat.type
+    )
+
+    items = get_inventory(user_id)
+
+    if not items:
+        bot.reply_to(
+            message,
+            "🎒 Інвентар порожній."
+        )
+        return
+
+    text = "🎒 Твій інвентар\n\n"
+
+    for item in items:
+        text += f"• {item['item_name']} ×{item['amount']}\n"
+
+    bot.reply_to(message, text)
+
+
+
+#Це має бути останнім!
+
+
 
 @bot.message_handler(func=lambda m: True)
 def other(message):

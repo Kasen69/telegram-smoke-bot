@@ -55,6 +55,15 @@ def create_table():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS inventory (
+            user_id INTEGER,
+            item_name TEXT,
+            amount INTEGER DEFAULT 1,
+            PRIMARY KEY (user_id, item_name)
+        )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -278,3 +287,19 @@ def is_promo_used(user_id, code):
 
     conn.close()
     return used
+
+def get_inventory(user_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT item_name, amount
+        FROM inventory
+        WHERE user_id = ?
+        ORDER BY item_name
+    """, (user_id,))
+
+    items = cursor.fetchall()
+
+    conn.close()
+    return items

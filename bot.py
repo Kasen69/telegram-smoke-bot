@@ -1,7 +1,7 @@
 import os
 import telebot
 import time
-from database import (
+from database.database import (
     create_table,
     add_user,
     get_user,

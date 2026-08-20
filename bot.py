@@ -1,6 +1,6 @@
-import os
 import telebot
 import time
+
 from database.database import (
     create_table,
     add_user,
@@ -20,23 +20,11 @@ from database.database import (
     get_inventory,
     add_item,
 )
-from dotenv import load_dotenv
-
-load_dotenv()
-# Persistent volume test
-
-TOKEN = os.getenv("TOKEN")
-
-if not TOKEN:
-    raise ValueError("Не знайдено TOKEN у .env або змінних середовища!")
+from config import TOKEN, COOLDOWN, ADMIN_ID
 
 bot = telebot.TeleBot(TOKEN)
 
 create_table()
-
-COOLDOWN = 3600  # 1 година
-
-ADMIN_ID = 879144294
 
 @bot.message_handler(commands=['promo'])
 def promo(message):

@@ -1,15 +1,18 @@
 from telebot import TeleBot
 
+
 def register(bot: TeleBot, db):
+
     @bot.message_handler(commands=['info'])
     def info(message):
         user_id = message.from_user.id
 
-        add_chat(
+        db.add_chat(
         message.chat.id,
         message.chat.type
         )
-        user = get_user(user_id)
+
+        user = db.get_user(user_id)
 
         if user is None:
             bot.reply_to(message, "У тебе ще немає статистики.")
@@ -18,7 +21,7 @@ def register(bot: TeleBot, db):
         username = user["username"]
         count = user["smokes"]
 
-        rank = get_user_rank(user_id)
+        rank = db.get_user_rank(user_id)
 
         bot.reply_to(
         message,

@@ -25,6 +25,7 @@ from config import TOKEN, COOLDOWN, ADMIN_ID
 
 from handlers import start
 from handlers import smoke
+from handlers import info
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -33,6 +34,7 @@ create_table()
 import database.database as db
 start.register(bot, db)
 smoke.register(bot, db)
+info.register(bot, db)
 
 @bot.message_handler(commands=['promo'])
 def promo(message):

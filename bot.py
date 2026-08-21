@@ -22,15 +22,17 @@ from database.database import (
 )
 
 from config import TOKEN, COOLDOWN, ADMIN_ID
+
 from handlers import start
+from handlers import smoke
 
 bot = telebot.TeleBot(TOKEN)
 
 create_table()
 
 import database.database as db
-
 start.register(bot, db)
+smoke.register(bot, db)
 
 @bot.message_handler(commands=['promo'])
 def promo(message):
@@ -69,65 +71,6 @@ def promo(message):
             message,
             "🎉 Бонус-код активовано!\n"
             "⏳ Час очікування скинуто."
-        )
-
-@bot.message_handler(commands=['smoke'])
-def smoke(message):
-    user_id = message.from_user.id
-    username = message.from_user.first_name or "Без імені"
-
-    add_chat(
-    message.chat.id,
-    message.chat.type
-    )
-
-    current_time = time.time()
-
-    user = get_user(user_id)
-
-    if user is None:
-        add_user(user_id, username)
-
-    update_username(user_id, username)
-    user = get_user(user_id)
-
-    if current_time - user["last_smoke"] >= COOLDOWN:
-        new_count = user["smokes"] + 1
-
-        update_smoke(
-            user_id,
-            new_count,
-            current_time
-        )
-
-        bot.reply_to(
-            message,
-            f"✅ {username}, ти покурив!\n"
-            f"🚬 Всього перекурів : {new_count}"
-        )
-
-    else:
-        remaining_seconds = int(
-            COOLDOWN - (current_time - user["last_smoke"])
-        )
-
-        if remaining_seconds >= 300:  # 5 хвилин
-            minutes = remaining_seconds // 60
-            wait_time = f"{minutes} хв"
-
-        else:
-            minutes = remaining_seconds // 60
-            seconds = remaining_seconds % 60
-
-            if minutes > 0:
-                wait_time = f"{minutes} хв {seconds} сек"
-            else:
-                wait_time = f"{seconds} сек"
-
-        bot.reply_to(
-            message,
-            f"❌ {username}, ще рано.\n"
-            f"⏳ Зачекай приблизно {wait_time}."
         )
 
 

@@ -20,11 +20,17 @@ from database.database import (
     get_inventory,
     add_item,
 )
+
 from config import TOKEN, COOLDOWN, ADMIN_ID
+from handlers import start
 
 bot = telebot.TeleBot(TOKEN)
 
 create_table()
+
+import database.database as db
+
+start.register(bot, db)
 
 @bot.message_handler(commands=['promo'])
 def promo(message):
@@ -64,32 +70,6 @@ def promo(message):
             "🎉 Бонус-код активовано!\n"
             "⏳ Час очікування скинуто."
         )
-
-@bot.message_handler(commands=['start'])
-def start(message):
-    user_id = message.from_user.id
-    username = message.from_user.first_name or "Без імені"
-
-    add_chat(
-    message.chat.id,
-    message.chat.type
-    )
-
-    user = get_user(user_id)
-
-    if user is None:
-        add_user(user_id, username)
-
-    update_username(user_id, username)
-
-    bot.send_message(
-        message.chat.id,
-        "🚬 Привіт! Я бот-рахівник перекурів.\n\n"
-        "Команди:\n"
-        "/smoke — покурити\n"
-        "/info — твоя статистика\n"
-        "/top — топ курців\n"
-    )
 
 @bot.message_handler(commands=['smoke'])
 def smoke(message):

@@ -44,7 +44,7 @@ top.register(bot, db)
 promo.register(bot, db)
 inventory.register(bot, db)
 give.register(bot, db)
-admin.register(bot, db)
+admin.register(bot, db, ADMIN_ID)
 
 
 

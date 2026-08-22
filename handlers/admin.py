@@ -1,7 +1,8 @@
 from telebot import TeleBot
 
 
-def register(bot: TeleBot, db):
+def register(bot: TeleBot, db, ADMIN_ID):
+
     @bot.message_handler(commands=['admin'])
     def admin(message):
         if message.from_user.id != ADMIN_ID:

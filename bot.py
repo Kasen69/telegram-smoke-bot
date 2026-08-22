@@ -1,27 +1,8 @@
 import telebot
 import time
 
-from database.database import (
-    create_table,
-    add_user,
-    get_user,
-    update_username,
-    update_smoke,
-    get_top,
-    add_chat,
-    get_user_rank,
-    get_users_count,
-    get_private_chats_count,
-    get_group_chats_count,
-    add_promo,
-    get_promo,
-    is_promo_used,
-    use_promo,
-    get_inventory,
-    add_item,
-)
-
-from config import TOKEN, COOLDOWN, ADMIN_ID
+from database.database import create_table
+from config import TOKEN, ADMIN_ID
 
 from handlers import start
 from handlers import smoke
@@ -31,6 +12,7 @@ from handlers import promo
 from handlers import inventory
 from handlers import admin
 from handlers import give
+
 
 bot = telebot.TeleBot(TOKEN)
 

@@ -1,4 +1,5 @@
 from telebot import TeleBot
+from texts.messages import START_MESSAGE
 
 
 def register(bot: TeleBot, db):
@@ -21,9 +22,5 @@ def register(bot: TeleBot, db):
 
         bot.send_message(
             message.chat.id,
-            "🚬 Привіт! Я бот-рахівник перекурів.\n\n"
-            "Команди:\n"
-            "/smoke — покурити\n"
-            "/info — твоя статистика\n"
-            "/top — топ курців\n"
+            START_MESSAGE
         )

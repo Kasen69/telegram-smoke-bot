@@ -288,15 +288,20 @@ def is_promo_used(user_id, code):
     conn.close()
     return used
 
-def get_inventory(self, user_id):
-    # Цей код покаже в логах, які колонки у вас СЕЙЧАС є в таблиці
-    cursor = self.conn.cursor()
-    cursor.execute("PRAGMA table_info(inventory)")
-    columns = cursor.fetchall()
-    print(f"!!! СТРУКТУРА ТАБЛИЦІ INVENTORY: {columns}", flush=True)
+def get_inventory(user_id):
+    conn = get_connection()
+    cursor = conn.cursor()
     
-    # Тимчасове повернення порожніього списку, щоб бот не падав
-    return []
+    cursor.execute("""
+        SELECT item_id, amount
+        FROM inventory
+        WHERE user_id = ?
+        ORDER BY item_id
+    """, (user_id,))
+    
+    items = cursor.fetchall()
+    conn.close()
+    return items
 
 
 

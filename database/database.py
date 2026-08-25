@@ -293,7 +293,7 @@ def get_inventory(user_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT item_id, amount
+        SELECT item, amount
         FROM inventory
         WHERE user_id = ?
         ORDER BY item

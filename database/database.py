@@ -24,9 +24,6 @@ def create_table():
 
     cursor.execute("PRAGMA journal_mode=WAL")
 
-     # ⚠️ ТИМЧАСОВИЙ РЯДОК: видалить тільки таблицю предметів, не чіпаючи користувачів!
-    cursor.execute("DROP TABLE IF EXISTS inventory")
-
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             user_id INTEGER PRIMARY KEY,

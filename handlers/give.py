@@ -1,4 +1,7 @@
 from telebot import TeleBot
+from items.items import ITEMS
+
+ADMIN_ID = 879144294
 
 
 def register(bot: TeleBot, db):
@@ -15,7 +18,10 @@ def register(bot: TeleBot, db):
                 "❌ Використання:\n"
                 "/give ID предмет кількість\n\n"
                 "Доступні предмети:\n"
-                "🏅 medal — Медаль за внесок"
+                items_list = ""
+
+                for item_id, info in ITEMS.items():
+                    items_list += f"{item_id} — {info['name']}\n"
             )
             return
 
@@ -30,9 +36,7 @@ def register(bot: TeleBot, db):
             )
             return
 
-        if item == "medal":
-            item_name = "🏅 Медаль за внесок"
-        else:
+        if item not in ITEMS:
             bot.reply_to(
                 message,
                 "❌ Такого предмета не існує."
@@ -46,11 +50,12 @@ def register(bot: TeleBot, db):
             )
             return
 
-        add_item(user_id, item_name, amount)
+        db.add_item(user_id, item, amount)
 
         bot.reply_to(
             message,
-            f"✅ Предмет видано!\n\n"
-            f"👤 ID: {user_id}\n"
-            f"🎁 {item_name} ×{amount}"
+            "❌ Використання:\n"
+            "/give ID предмет кількість\n\n"
+            "Доступні предмети:\n"
+            f"{items_list}"
         )

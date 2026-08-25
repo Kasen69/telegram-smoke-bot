@@ -1,9 +1,12 @@
 from telebot import TeleBot
+from items.items import ITEMS
 
 
 def register(bot: TeleBot, db):
+
     @bot.message_handler(commands=['inventory'])
     def inventory(message):
+
         user_id = message.from_user.id
 
         db.add_chat(
@@ -23,6 +26,16 @@ def register(bot: TeleBot, db):
         text = "🎒 Твій інвентар\n\n"
 
         for item in items:
-            text += f"• {item['item_name']} ×{item['amount']}\n"
+
+            item_id = item["item_id"]
+
+            info = ITEMS.get(item_id)
+
+            if info is None:
+                continue
+
+            text += (
+                f"{info['name']} ×{item['amount']}\n"
+            )
 
         bot.reply_to(message, text)

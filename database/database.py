@@ -58,9 +58,9 @@ def create_table():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS inventory (
             user_id INTEGER,
-            item_name TEXT,
+            item_id TEXT,
             amount INTEGER DEFAULT 1,
-            PRIMARY KEY (user_id, item_name)
+            PRIMARY KEY (user_id, item_id)
         )
     """)
 
@@ -293,10 +293,10 @@ def get_inventory(user_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT item_name, amount
+        SELECT item_id, amount
         FROM inventory
         WHERE user_id = ?
-        ORDER BY item_name
+        ORDER BY item_id
     """, (user_id,))
 
     items = cursor.fetchall()
@@ -305,16 +305,16 @@ def get_inventory(user_id):
     return items
 
 
-def add_item(user_id, item_name, amount=1):
+def add_item(user_id, item_id, amount=1):
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO inventory (user_id, item_name, amount)
+        INSERT INTO inventory (user_id, item_id, amount)
         VALUES (?, ?, ?)
-        ON CONFLICT(user_id, item_name)
+        ON CONFLICT(user_id, item_id)
         DO UPDATE SET amount = amount + excluded.amount
-    """, (user_id, item_name, amount))
+    """, (user_id, item_id, amount))
 
     conn.commit()
     conn.close()

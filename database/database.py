@@ -296,7 +296,7 @@ def get_inventory(user_id):
         SELECT item_id, amount
         FROM inventory
         WHERE user_id = ?
-        ORDER BY item_id
+        ORDER BY item
     """, (user_id,))
 
     items = cursor.fetchall()

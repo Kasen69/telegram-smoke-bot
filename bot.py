@@ -13,6 +13,7 @@ from handlers import inventory
 from handlers import admin
 from handlers import give
 
+#test
 
 bot = telebot.TeleBot(TOKEN)
 

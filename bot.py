@@ -12,6 +12,7 @@ from handlers import promo
 from handlers import inventory
 from handlers import admin
 from handlers import give
+from handlers import support
 
 #test
 
@@ -28,6 +29,7 @@ promo.register(bot, db)
 inventory.register(bot, db)
 give.register(bot, db)
 admin.register(bot, db, ADMIN_ID)
+support.register(bot, db)
 
 
 

@@ -9,7 +9,10 @@ def register(bot: TeleBot, db):
         args = message.text.split(maxsplit=1)
 
         if len(args) < 2:
-            bot.reply_to(message, "❌ Використання:\n/promo КОД")
+            bot.reply_to(
+                message,
+                "❌ Використання:\n/promo КОД"
+            )
             return
 
         code = args[1].strip().upper()
@@ -17,26 +20,45 @@ def register(bot: TeleBot, db):
         promo = db.get_promo(code)
 
         if promo is None:
-            bot.reply_to(message, "❌ Такого бонус-коду не існує.")
+            bot.reply_to(
+                message,
+                "❌ Такого бонус-коду не існує."
+            )
             return
 
-        if is_promo_used(user_id, code):
-            bot.reply_to(message, "❌ Ти вже використав цей бонус-код.")
+        if db.is_promo_used(user_id, code):
+            bot.reply_to(
+                message,
+                "❌ Ти вже використав цей бонус-код."
+            )
             return
 
         if promo["type"] == "reset_cd":
-            user = get_user(user_id)
+            user = db.get_user(user_id)
 
-            update_smoke(
+            if user is None:
+                bot.reply_to(
+                    message,
+                    "❌ Спочатку скористайся /start."
+                )
+                return
+
+            db.update_smoke(
                 user_id,
                 user["smokes"],
                 0
-            )   
+            )
 
-            use_promo(user_id, code)
+            db.use_promo(user_id, code)
 
             bot.reply_to(
                 message,
                 "🎉 Бонус-код активовано!\n"
                 "⏳ Час очікування скинуто."
             )
+            return
+
+        bot.reply_to(
+            message,
+            "❌ Невідомий тип бонус-коду."
+        )

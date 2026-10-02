@@ -23,8 +23,8 @@ def register(bot: TeleBot, db):
             )
         )
 
-        bot.send_message(
-            message.chat.id,
+        bot.reply_to(
+            message,
             "❤️ <b>Підтримати Перекурчика</b>\n\n"
             "Якщо тобі подобається бот і ти хочеш підтримати його розвиток — "
             "можеш закинути будь-яку суму.\n\n"

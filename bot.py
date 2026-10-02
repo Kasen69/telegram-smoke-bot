@@ -4,15 +4,18 @@ import time
 from database.database import create_table
 from config import TOKEN, ADMIN_ID
 
-from handlers import start
-from handlers import smoke
-from handlers import info
-from handlers import top
-from handlers import promo
-from handlers import inventory
-from handlers import admin
-from handlers import give
-from handlers import support
+from handlers import (
+    start,
+    smoke,
+    info,
+    top,
+    promo,
+    inventory,
+    admin,
+    give,
+    support,
+    achievements,
+)
 
 #test
 
@@ -30,6 +33,7 @@ inventory.register(bot, db)
 give.register(bot, db)
 admin.register(bot, db, ADMIN_ID)
 support.register(bot, db)
+achievements.register(bot, db)
 
 
 

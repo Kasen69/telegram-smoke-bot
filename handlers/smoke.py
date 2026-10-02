@@ -1,6 +1,7 @@
 from telebot import TeleBot
 import time
 from config import COOLDOWN
+from achievements.achievements import ACHIEVEMENTS
 
 
 def register(bot: TeleBot, db):
@@ -38,6 +39,36 @@ def register(bot: TeleBot, db):
                 f"✅ {username}, ти покурив!\n"
                 f"🚬 Всього перекурів: {new_count}"
             )
+
+            # Перевірка досягнень
+            for achievement_id, achievement in ACHIEVEMENTS.items():
+                if new_count >= achievement["smokes"]:
+                    unlocked = db.unlock_achievement(
+                        user_id,
+                        achievement_id,
+                        current_time
+                    )
+
+                    if unlocked:
+                        if achievement_id == "thousand_smokes":
+                            bot.reply_to(
+                                message,
+                                "🏆 <b>НОВЕ ДОСЯГНЕННЯ!</b>\n\n"
+                                "☠️ <b>Легенда перекурів</b>\n\n"
+                                "🚬 1000 перекурів.\n\n"
+                                "Ми не знаємо, пишатися цим чи хвилюватися.\n"
+                                "Але це сталося.",
+                                parse_mode="HTML"
+                            )
+
+                        else:
+                            bot.reply_to(
+                                message,
+                                "🏆 <b>НОВЕ ДОСЯГНЕННЯ!</b>\n\n"
+                                f"{achievement['name']}\n"
+                                f"{achievement['description']}",
+                                parse_mode="HTML"
+                            )
 
         else:
             remaining_seconds = int(

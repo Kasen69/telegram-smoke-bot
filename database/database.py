@@ -64,6 +64,15 @@ def create_table():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS user_achievements (
+            user_id INTEGER,
+            achievement_id TEXT,
+            unlocked_at REAL,
+            PRIMARY KEY (user_id, achievement_id)
+        )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -318,3 +327,36 @@ def add_item(user_id, item_id, amount=1):
 
     conn.commit()
     conn.close()
+
+def unlock_achievement(user_id, achievement_id, unlocked_at):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT OR IGNORE INTO user_achievements
+        (user_id, achievement_id, unlocked_at)
+        VALUES (?, ?, ?)
+    """, (user_id, achievement_id, unlocked_at))
+
+    unlocked = cursor.rowcount > 0
+
+    conn.commit()
+    conn.close()
+
+    return unlocked
+
+
+def get_achievements(user_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT achievement_id, unlocked_at
+        FROM user_achievements
+        WHERE user_id = ?
+    """, (user_id,))
+
+    achievements = cursor.fetchall()
+
+    conn.close()
+    return achievements

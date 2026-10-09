@@ -6,9 +6,9 @@ ACHIEVEMENTS = {
     },
 
     "sixty_seven_smokes": {
-    "name": "⁶⁷",
-    "description": "Ті, хто знають — знають.\nP.S. для Поліни 🫡",
-    "smokes": 67
+        "name": "⁶⁷",
+        "description": "P.S. для Поліни 🫡",
+        "smokes": 67
     },
 
     "hundred_smokes": {

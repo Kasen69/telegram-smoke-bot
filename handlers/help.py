@@ -22,8 +22,7 @@ def register(bot: TeleBot, db):
         )
 
         bot.reply_to(
-            message,
-            "🚬 <b>Посібник Перекурчика</b>",
-            parse_mode="HTML",
-            reply_markup=keyboard
+        message,
+        "👇",
+        reply_markup=keyboard
         )

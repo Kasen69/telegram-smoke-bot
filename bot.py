@@ -15,6 +15,7 @@ from handlers import (
     give,
     support,
     achievements,
+    help,
 )
 
 #test
@@ -34,6 +35,7 @@ give.register(bot, db)
 admin.register(bot, db, ADMIN_ID)
 support.register(bot, db)
 achievements.register(bot, db)
+help.register(bot, db)
 
 
 

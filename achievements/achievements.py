@@ -5,6 +5,12 @@ ACHIEVEMENTS = {
         "smokes": 1
     },
 
+    "sixty_seven_smokes": {
+    "name": "⁶⁷",
+    "description": "Ті, хто знають — знають.\nP.S. для Поліни 🫡",
+    "smokes": 67
+    },
+
     "hundred_smokes": {
         "name": "💨 Соточка",
         "description": "Зробити 100 перекурів",
@@ -12,7 +18,7 @@ ACHIEVEMENTS = {
     },
 
     "three_hundred_smokes": {
-        "name": "Відсмокчи в тракториста",
+        "name": "🔥 Відсмокчи в тракториста",І
         "description": "Зробити 300 перекурів",
         "smokes": 300
     },

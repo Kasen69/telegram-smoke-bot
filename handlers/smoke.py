@@ -71,7 +71,7 @@ def register(bot: TeleBot, db):
                                 parse_mode="HTML"
                             )
                         # Шанс випадіння золотої сигарети — 0.1%
-                        if random.random() < 1:
+                        if random.random() < 0.001:
                             db.add_item(
                                 user_id,
                                 "golden_cigarette",

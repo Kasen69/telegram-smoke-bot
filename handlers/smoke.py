@@ -1,5 +1,6 @@
 from telebot import TeleBot
 import time
+import random
 from config import COOLDOWN
 from achievements.achievements import ACHIEVEMENTS
 
@@ -67,6 +68,24 @@ def register(bot: TeleBot, db):
                                 "🏆 <b>НОВЕ ДОСЯГНЕННЯ!</b>\n\n"
                                 f"{achievement['name']}\n"
                                 f"{achievement['description']}",
+                                parse_mode="HTML"
+                            )
+                        # Шанс випадіння золотої сигарети — 0.1%
+                        if random.random() < 1:
+                            db.add_item(
+                                user_id,
+                                "golden_cigarette",
+                                1
+                            )
+
+                            bot.reply_to(
+                                message,
+                                "✨ <b>ЩО ЦЕ БУЛО?</b>\n\n"
+                                "Після перекуру ти помітив щось дивне...\n\n"
+                                "🚬 <b>Золота сигарета</b>\n\n"
+                                "🟡 Легендарний предмет\n"
+                                "🎲 Шанс випадіння: <b>0,1%</b>\n\n"
+                                "Предмет додано в /inventory.",
                                 parse_mode="HTML"
                             )
 

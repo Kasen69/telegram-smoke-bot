@@ -18,7 +18,7 @@ ACHIEVEMENTS = {
     },
 
     "three_hundred_smokes": {
-        "name": "🔥 Відсмокчи в тракториста",І
+        "name": "🔥 Відсмокчи в тракториста",
         "description": "Зробити 300 перекурів",
         "smokes": 300
     },
